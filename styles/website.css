@@ -1,0 +1,101 @@
+.book-footer {
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    margin-top: 50px;
+    color: #666;
+    font-size: 14px;
+}
+
+.book-footer a {
+    color: #42b983;
+    text-decoration: none;
+}
+
+.book-footer a:hover {
+    text-decoration: underline;
+}
+
+/* 隐藏左下角的 "本书使用 HonKit 发布" 文字 */
+.gitbook-link {
+    display: none !important;
+}
+
+
+/* 自定义版权信息 */
+.book .page-inner::after {
+    content: "Copyright © 2025-2026 dbnotes.cn.  All rights reserved. ";
+    display: block;
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    border-top: 1px solid #ddd;
+    color: #666;
+    font-size: 16px;
+    position: absolute;  /* 固定在最底部 */
+    bottom: 0;
+    left: 0;
+    right: 0;
+} 
+
+/* 将自定义版权信息放在右侧内容的最下面/最底层 */
+.book-summary .summary li.gitbook-link { display: none; } 
+.page-inner { padding-bottom: 120px; position: relative; min-height: 90vh; }
+.page-inner::after { content: '本书使用 HonKit 发布'; position: absolute; bottom: 0; left: 0; right: 0; text-align: center; padding: 15px; color: #7e888b; font-size: 14px; border-top: 1px solid #e7e7e7; }
+.page-inner { margin: 0 auto; }
+/*.page-inner { margin: 0 !important; }  ##靠左显示内容*/
+/*.page-inner { margin: 0 auto; }        ##居中显示内容*/
+
+/* 
+┌─────────────────────────────────┐
+│                                 │
+│      页面内容区域                 │  ← min-height: 90vh (至少占90%屏幕高度)
+│                                 │
+│                                 │
+│                                 │
+├─────────────────────────────────┤  ← padding-bottom: 60px (底部留60px空间)
+│     版权信息                     │  ← position: absolute; bottom: 0;
+└─────────────────────────────────┘
+ */
+
+.gitbook-donate {
+    position: relative;
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid #e7e7e7;
+    background-color: #f8f9fa;
+}
+
+.gitbook-donate .donate-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.gitbook-donate .donate-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.gitbook-donate .donate-button:hover {
+    background-color: #0056b3;
+}
+
+
+/* 自定义打赏按钮样式 */
+.gitbook-donate {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+

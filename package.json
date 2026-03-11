@@ -9,5 +9,28 @@
     "serve": "honkit serve"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "gitbook-plugin-anchor-navigation-ex": "^1.0.14",
+    "gitbook-plugin-auto-scroll-table": "^0.0.5",
+    "gitbook-plugin-back-to-top-button": "^0.1.4",
+    "gitbook-plugin-chapter-fold": "^0.0.4",
+    "gitbook-plugin-code": "^0.1.0",
+    "gitbook-plugin-copy-code-button": "^0.0.2",
+    "gitbook-plugin-copyright": "^1.0.0",
+    "gitbook-plugin-custom-footer": "^1.0.3",
+    "gitbook-plugin-custom-html": "^0.0.2",
+    "gitbook-plugin-donate": "^1.0.2",
+    "gitbook-plugin-expandable-chapters": "^0.2.0",
+    "gitbook-plugin-header": "^0.1.0",
+    "gitbook-plugin-image-viewer": "^0.1.0",
+    "gitbook-plugin-lightbox": "^1.2.0",
+    "gitbook-plugin-page-footer": "^5.5.0",
+    "gitbook-plugin-prism": "^2.4.0",
+    "gitbook-plugin-search-pro": "^2.0.2",
+    "gitbook-plugin-theme-code": "^0.0.24",
+    "gitbook-plugin-theme-comscore": "^0.0.3",
+    "honkit": "^6.1.6",
+    "install": "^0.13.0"
+  }
 }
