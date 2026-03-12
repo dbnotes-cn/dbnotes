@@ -1,0 +1,1564 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <title>从pg日志中提取慢sqlplan · dbnotes.cn</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.1.6">
+        <meta name="author" content="dbnotes-cn">
+        
+        
+    
+    <link rel="stylesheet" href="../../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-search-pro/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-expandable-chapters/expandable-chapters.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-password-pro/style.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-code/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-lightbox/css/lightbox.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-auto-scroll-table/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-theme-comscore/test.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../../../styles/website.css">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="pg_log_auto-capture_sqltext.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://www.dbnotes.cn" target="_blank" class="custom-link">Home</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../../">
+            
+                <a href="../../../">
+            
+                    
+                    首页
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" >
+            
+                <span>
+            
+                    
+                    老牌数据库
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" >
+            
+                <span>
+            
+                    
+                    ORACLE
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" >
+            
+                <span>
+            
+                    
+                    [oracle备份]
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" >
+            
+                <span>
+            
+                    
+                    [oracle dg]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" >
+            
+                <span>
+            
+                    
+                    SQLserver
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.2.1" >
+            
+                <span>
+            
+                    
+                    [SQLServer日常运维脚本]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" >
+            
+                <span>
+            
+                    
+                    MySQL
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.3.1" >
+            
+                <span>
+            
+                    
+                    [MySQL备份]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" >
+            
+                <span>
+            
+                    
+                    PostgreSql(PG)
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" >
+            
+                <span>
+            
+                    
+                    [PG源码编译]
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" >
+            
+                <span>
+            
+                    
+                    [pg的备份与恢复]
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.3" data-path="pg_log_auto-capture_sqltext.html">
+            
+                <a href="pg_log_auto-capture_sqltext.html">
+            
+                    
+                    从pg日志中提取慢sqltext
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.4.4" data-path="pg_log_auto-capture_sqlplan.html">
+            
+                <a href="pg_log_auto-capture_sqlplan.html">
+            
+                    
+                    从pg日志中提取慢sqlplan
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" >
+            
+                <span>
+            
+                    
+                    国产数据库
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" >
+            
+                <span>
+            
+                    
+                    DAMENG(DM8)
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" >
+            
+                <span>
+            
+                    
+                    [dm8一键部署脚本]
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" >
+            
+                <span>
+            
+                    
+                    [dm8版本查询]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" >
+            
+                <span>
+            
+                    
+                    KINGBASE(KESv9)
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" >
+            
+                <span>
+            
+                    
+                    [KES一键部署脚本]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" >
+            
+                <span>
+            
+                    
+                    OCEANBASE(OB)
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" >
+            
+                <span>
+            
+                    
+                    [OBproxy学习]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" >
+            
+                <span>
+            
+                    
+                    TIDB
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" >
+            
+                <span>
+            
+                    
+                    [tidb的安装]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" >
+            
+                <span>
+            
+                    
+                    YashanDB
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" >
+            
+                <span>
+            
+                    
+                    [ysdb一键部署脚本]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" >
+            
+                <span>
+            
+                    
+                    OpenGauss(OG)
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" >
+            
+                <span>
+            
+                    
+                    [omm登录限制]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" >
+            
+                <span>
+            
+                    
+                    Others
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" >
+            
+                <span>
+            
+                    
+                    NewSQL
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" >
+            
+                <span>
+            
+                    
+                    REDIS
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" >
+            
+                <span>
+            
+                    
+                    [redis的部署]
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" >
+            
+                <span>
+            
+                    
+                    [Redis 性能优化]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" >
+            
+                <span>
+            
+                    
+                    MongoDB
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" >
+            
+                <span>
+            
+                    
+                    [mongodb全家桶]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" >
+            
+                <span>
+            
+                    
+                    Neo4j
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.3.1" >
+            
+                <span>
+            
+                    
+                    [Neo4j概念介绍]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" >
+            
+                <span>
+            
+                    
+                    InfluxDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" >
+            
+                <span>
+            
+                    
+                    Others
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" >
+            
+                <span>
+            
+                    
+                    系统运维
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" >
+            
+                <span>
+            
+                    
+                    Linux系统相关
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" >
+            
+                <span>
+            
+                    
+                    [gcc升级方式介绍]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" >
+            
+                <span>
+            
+                    
+                    Shell脚本相关
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.2.1" >
+            
+                <span>
+            
+                    
+                    [判断系统默认 shell 配置]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" >
+            
+                <span>
+            
+                    
+                    Docker技术相关
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.3.1" >
+            
+                <span>
+            
+                    
+                    [网络介绍]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" >
+            
+                <span>
+            
+                    
+                    K8S运维相关
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.4.1" >
+            
+                <span>
+            
+                    
+                    [常见组件详解]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" >
+            
+                <span>
+            
+                    
+                    中间件相关
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" >
+            
+                <span>
+            
+                    
+                    监控与告警
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.6.1" >
+            
+                <span>
+            
+                    
+                    [zabbix]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" >
+            
+                <span>
+            
+                    
+                    Others
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.7.1" >
+            
+                <span>
+            
+                    
+                    [X86主机模拟ARM环境]
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" >
+            
+                <span>
+            
+                    
+                    资源下载专区
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../../ftp/download.html">
+            
+                <a href="../../ftp/download.html">
+            
+                    
+                    资源下载
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../../ftp/auto_install.html">
+            
+                <a href="../../ftp/auto_install.html">
+            
+                    
+                    DB一键部署脚本
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../../ftp/linux-third-select.html">
+            
+                <a href="../../ftp/linux-third-select.html">
+            
+                    
+                    应用软件安装·版本指导
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../info/LifeDreams.html">
+            
+                <a href="../../info/LifeDreams.html">
+            
+                    
+                    诗与远方
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../info/ContactMe.html">
+            
+                <a href="../../info/ContactMe.html">
+            
+                    
+                    联系我们
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            本书使用 HonKit 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../../.." >从pg日志中提取慢sqlplan</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><li><span class="title-icon "></span><a href="#从-pglog-自动提取-sql-plan-程序源码"><b></b>从 pg_log 自动提取 SQL Plan 程序源码</a></li><ul><li><span class="title-icon "></span><a href="#1-功能说明"><b></b>1. 功能说明</a></li><ul><li><span class="title-icon "></span><a href="#去重机制逻辑如下"><b></b>去重机制逻辑如下</a></li></ul><li><span class="title-icon "></span><a href="#2-使用方法"><b></b>2. 使用方法</a></li><li><span class="title-icon "></span><a href="#3-示例"><b></b>3. 示例</a></li><li><span class="title-icon "></span><a href="#4-源码"><b></b>4. 源码</a></li><ul><li><span class="title-icon "></span><a href="#41-uniquesqlplanpy"><b></b>4.1 unique_sql_plan.py</a></li></ul></ul></ul></div><a href="#从-pglog-自动提取-sql-plan-程序源码" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h1 id="从-pglog-自动提取-sql-plan-程序源码"><a name="从-pglog-自动提取-sql-plan-程序源码" class="anchor-navigation-ex-anchor" href="#从-pglog-自动提取-sql-plan-程序源码"><i class="fa fa-link" aria-hidden="true"></i></a><strong>从 pg_log 自动提取 SQL Plan 程序源码</strong></h1>
+<h2 id="1-功能说明"><a name="1-功能说明" class="anchor-navigation-ex-anchor" href="#1-功能说明"><i class="fa fa-link" aria-hidden="true"></i></a>1. 功能说明</h2>
+<p>从 <code>postgresql_xxx.log</code> 日志（auto_explain 抓取）中自动分析并提取慢 SQL Plan（自动去重）。</p>
+<h3 id="去重机制逻辑如下"><a name="去重机制逻辑如下" class="anchor-navigation-ex-anchor" href="#去重机制逻辑如下"><i class="fa fa-link" aria-hidden="true"></i></a>去重机制逻辑如下</h3>
+<ul>
+<li>✅ SQL 相同但计划结构不同(表名/索引名/操作符类型不同)  → 均保留  </li>
+<li>✅ SQL 相同且计划结构相同(表名/索引名/操作符类型相同)  → 只保留第一次出现的  </li>
+<li>✅ 使用传参的相同 SQL  → 视为同一条 SQL（参数值不影响去重）  </li>
+<li>✅ 计划结构相同但数值不同(统计信息/cost/actual time/rows等数值不同)  → 视为相同条目（只保留第一次出现的）  </li>
+</ul>
+<h2 id="2-使用方法"><a name="2-使用方法" class="anchor-navigation-ex-anchor" href="#2-使用方法"><i class="fa fa-link" aria-hidden="true"></i></a>2. 使用方法</h2>
+<p>直接将该 Python 程序放到日志文件所在目录下执行，它会自动分析当前目录下的所有 <code>*.log</code> 日志文件。</p>
+<h2 id="3-示例"><a name="3-示例" class="anchor-navigation-ex-anchor" href="#3-示例"><i class="fa fa-link" aria-hidden="true"></i></a>3. 示例</h2>
+<p>从 8 个 <code>postgresql-2026-xxxx.log</code> 文件中，共提取到 <strong>1,442,015</strong> 条原始 SQL 语句，去重后剩余 <strong>83</strong> 条唯一 (SQL, 计划) 组合，并保存在当前目录下的 <code>unique_sql_plan.txt</code> 文件中。</p>
+<p>执行过程
+<a href="../../images/pg/pg_log_cap_sqlplan.png" data-lightbox="95f52d9b-8ffa-4058-8a60-3494592a0d53" data-title="执行过程"><img src="../../images/pg/pg_log_cap_sqlplan.png" alt="执行过程"></img></a></p>
+<p>执行结果
+<a href="../../images/pg/pg_log_cap_sqlplan_txt.png" data-lightbox="1523f43c-484a-47ac-a8cf-5dd2081c1c1d" data-title="执行结果"><img src="../../images/pg/pg_log_cap_sqlplan_txt.png" alt="执行结果"></img></a></p>
+<hr></hr>
+<h2 id="4-源码"><a name="4-源码" class="anchor-navigation-ex-anchor" href="#4-源码"><i class="fa fa-link" aria-hidden="true"></i></a>4. 源码</h2>
+<h3 id="41-uniquesqlplanpy"><a name="41-uniquesqlplanpy" class="anchor-navigation-ex-anchor" href="#41-uniquesqlplanpy"><i class="fa fa-link" aria-hidden="true"></i></a>4.1 unique_sql_plan.py</h3>
+<pre><code class="lang-python"><span class="hljs-comment">## ***== cat unique_sql_plan.py   ==***</span>
+<span class="hljs-comment">## ***==   All rights reserved.   ==***</span>
+<span class="hljs-comment">## ***== Copyright © dbnotes.cn.  ==***</span>
+
+
+<span class="hljs-keyword">import</span> re
+<span class="hljs-keyword">import</span> glob
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> OrderedDict
+
+<span class="hljs-comment"># 扩展的操作符列表，包括所有可能的计划节点</span>
+PLAN_KEYWORDS = {
+    <span class="hljs-string">'-&gt;'</span>, <span class="hljs-string">'Aggregate'</span>, <span class="hljs-string">'Append'</span>, <span class="hljs-string">'Bitmap Heap Scan'</span>, <span class="hljs-string">'Bitmap Index Scan'</span>, <span class="hljs-string">'BitmapOr'</span>,
+    <span class="hljs-string">'CTE Scan'</span>, <span class="hljs-string">'Custom Scan'</span>, <span class="hljs-string">'Delete'</span>, <span class="hljs-string">'Foreign Scan'</span>, <span class="hljs-string">'Function Scan'</span>,
+    <span class="hljs-string">'Gather'</span>, <span class="hljs-string">'Gather Merge'</span>, <span class="hljs-string">'Group'</span>, <span class="hljs-string">'GroupAggregate'</span>, <span class="hljs-string">'Hash'</span>, <span class="hljs-string">'Hash Join'</span>,
+    <span class="hljs-string">'Hash Left Join'</span>, <span class="hljs-string">'Hash Right Join'</span>, <span class="hljs-string">'Hash Full Join'</span>, <span class="hljs-string">'HashAggregate'</span>,
+    <span class="hljs-string">'Incremental Sort'</span>, <span class="hljs-string">'Index Only Scan'</span>, <span class="hljs-string">'Index Scan'</span>, <span class="hljs-string">'Insert'</span>, <span class="hljs-string">'Limit'</span>,
+    <span class="hljs-string">'LockRows'</span>, <span class="hljs-string">'Materialize'</span>, <span class="hljs-string">'Memoize'</span>, <span class="hljs-string">'Merge Append'</span>, <span class="hljs-string">'Merge Join'</span>,
+    <span class="hljs-string">'Merge Left Join'</span>, <span class="hljs-string">'Merge Right Join'</span>, <span class="hljs-string">'Merge Full Join'</span>, <span class="hljs-string">'ModifyTable'</span>,
+    <span class="hljs-string">'Nested Loop'</span>, <span class="hljs-string">'Nested Loop Left Join'</span>, <span class="hljs-string">'Nested Loop Right Join'</span>, <span class="hljs-string">'Nested Loop Full Join'</span>,
+    <span class="hljs-string">'Parallel Seq Scan'</span>, <span class="hljs-string">'ProjectSet'</span>, <span class="hljs-string">'Recursive Union'</span>, <span class="hljs-string">'Result'</span>, <span class="hljs-string">'Seq Scan'</span>,
+    <span class="hljs-string">'SetOp'</span>, <span class="hljs-string">'Sort'</span>, <span class="hljs-string">'Subquery Scan'</span>, <span class="hljs-string">'TableFunc Scan'</span>, <span class="hljs-string">'Tid Scan'</span>, <span class="hljs-string">'Unique'</span>,
+    <span class="hljs-string">'Update'</span>, <span class="hljs-string">'Values Scan'</span>, <span class="hljs-string">'WindowAgg'</span>, <span class="hljs-string">'Workers'</span>
+}
+
+<span class="hljs-comment"># 需要完全忽略的行模式（执行细节）</span>
+IGNORE_PATTERNS = [
+    <span class="hljs-string">r'^\s*Buffers:'</span>,
+    <span class="hljs-string">r'^\s*Storage:'</span>,
+    <span class="hljs-string">r'^\s*Memory Usage:'</span>,
+    <span class="hljs-string">r'^\s*Heap Fetches:'</span>,
+    <span class="hljs-string">r'^\s*Index Searches:'</span>,
+    <span class="hljs-string">r'^\s*JIT:'</span>,
+    <span class="hljs-string">r'^\s*Buckets:.*Batches:'</span>,
+    <span class="hljs-string">r'^\s*Worker\s+\d+:'</span>,
+    <span class="hljs-string">r'^\s*Workers Planned:'</span>,
+    <span class="hljs-string">r'^\s*Workers Launched:'</span>,
+    <span class="hljs-string">r'^\s*Execution Time:'</span>,
+    <span class="hljs-string">r'^\s*Planning Time:'</span>,
+    <span class="hljs-string">r'^\s*Heap Blocks:'</span>,
+    <span class="hljs-string">r'^\s*Hits:.*Misses:.*Evictions:.*Overflows:'</span>,
+    <span class="hljs-string">r'^\s*Rows Removed by Filter:'</span>,
+    <span class="hljs-string">r'^\s*Cache Mode: logical'</span>,
+    <span class="hljs-string">r'^\s*Sort Method:'</span>,
+    <span class="hljs-string">r'^\s*Sort Key:'</span>,
+    <span class="hljs-string">r'^\s*Group Key:'</span>,
+    <span class="hljs-string">r'^\s*Hash Cond:'</span>,
+    <span class="hljs-string">r'^\s*Join Filter:'</span>,
+    <span class="hljs-string">r'^\s*Recheck Cond:'</span>,
+    <span class="hljs-string">r'^\s*Filter:'</span>,
+    <span class="hljs-string">r'^\s*Index Cond:'</span>,
+    <span class="hljs-string">r'^\s*Presorted Key:'</span>,
+    <span class="hljs-string">r'^\s*Full-sort Groups:'</span>,
+    <span class="hljs-string">r'^\s*Average Memory:'</span>,
+    <span class="hljs-string">r'^\s*Peak Memory:'</span>,
+    <span class="hljs-string">r'^\s*Pre-sorted Groups:'</span>,
+    <span class="hljs-string">r'^\s*Batches:'</span>,
+    <span class="hljs-string">r'^\s*Memory Usage:'</span>,
+    <span class="hljs-string">r'^\s*Disk Usage:'</span>,
+    <span class="hljs-string">r'^\s*Functions:'</span>,
+    <span class="hljs-string">r'^\s*Options:'</span>,
+    <span class="hljs-string">r'^\s*Timing:'</span>,
+    <span class="hljs-string">r'^\s*Generation:'</span>,
+    <span class="hljs-string">r'^\s*Inlining:'</span>,
+    <span class="hljs-string">r'^\s*Optimization:'</span>,
+    <span class="hljs-string">r'^\s*Emission:'</span>,
+    <span class="hljs-string">r'^\s*Total:'</span>,
+    <span class="hljs-string">r'^\s*Cache Key:'</span>,
+    <span class="hljs-string">r'^\s*Cache Mode:'</span>,
+    <span class="hljs-string">r'^\s*Hits:'</span>,
+    <span class="hljs-string">r'^\s*Misses:'</span>,
+    <span class="hljs-string">r'^\s*Evictions:'</span>,
+    <span class="hljs-string">r'^\s*Overflows:'</span>,
+    <span class="hljs-string">r'^\s*Memory Usage:'</span>,
+    <span class="hljs-string">r'^\s*Storage:'</span>,
+]
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">normalize_sql</span>(<span class="hljs-params">sql</span>):
+    <span class="hljs-string">"""压缩空白，用于去重（不影响输出的原始格式）"""</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> sql:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>
+    <span class="hljs-keyword">return</span> re.sub(<span class="hljs-string">r'\s+'</span>, <span class="hljs-string">' '</span>, sql).strip()
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">normalize_plan</span>(<span class="hljs-params">plan</span>):
+    <span class="hljs-string">"""
+    规范化计划文本：移除所有执行细节行，保留结构骨架。
+    对保留的结构行：
+      - 去除行首所有空白
+      - 移除成本括号 (cost=...)
+      - 移除实际执行时间括号 (actual time=...)
+      - 移除 "(never executed)" 标记
+      - 将独立数字（整数/小数）替换为 '#'
+      - 压缩内部连续空白为一个空格
+    返回一个无缩进的、按行连接的字符串，用于比较计划结构是否相同。
+    """</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> plan:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>
+
+    lines = plan.splitlines()
+    cleaned_lines = []
+
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines:
+        <span class="hljs-comment"># 检查是否应完全忽略该行</span>
+        ignore = <span class="hljs-literal">False</span>
+        <span class="hljs-keyword">for</span> pat <span class="hljs-keyword">in</span> IGNORE_PATTERNS:
+            <span class="hljs-keyword">if</span> re.<span class="hljs-keyword">match</span>(pat, line):
+                ignore = <span class="hljs-literal">True</span>
+                <span class="hljs-keyword">break</span>
+        <span class="hljs-keyword">if</span> ignore:
+            <span class="hljs-keyword">continue</span>
+
+        <span class="hljs-comment"># 移除成本括号 (cost=...)</span>
+        line = re.sub(<span class="hljs-string">r'\s*\(cost=[^)]*\)'</span>, <span class="hljs-string">''</span>, line)
+        <span class="hljs-comment"># 移除实际执行时间括号 (actual time=...)</span>
+        line = re.sub(<span class="hljs-string">r'\s*\(actual time[^)]*\)'</span>, <span class="hljs-string">''</span>, line)
+        <span class="hljs-comment"># 移除 "(never executed)" 标记</span>
+        line = re.sub(<span class="hljs-string">r'\s*\(never executed\)'</span>, <span class="hljs-string">''</span>, line)
+        <span class="hljs-comment"># 去除行首所有空白</span>
+        stripped = line.lstrip()
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> stripped:
+            <span class="hljs-keyword">continue</span>
+
+        <span class="hljs-comment"># 将行中所有独立数字替换为 '#'</span>
+        <span class="hljs-comment"># \b 确保不会匹配到标识符中的数字（如下划线后的数字）</span>
+        cleaned = re.sub(<span class="hljs-string">r'\b\d+(?:\.\d+)?\b'</span>, <span class="hljs-string">'#'</span>, stripped)
+        <span class="hljs-comment"># 压缩内部连续空白为一个空格（避免因缩进/空格差异导致误判）</span>
+        cleaned = re.sub(<span class="hljs-string">r'\s+'</span>, <span class="hljs-string">' '</span>, cleaned)
+
+        <span class="hljs-keyword">if</span> cleaned:
+            cleaned_lines.append(cleaned)
+
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'\n'</span>.join(cleaned_lines)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">extract_entry_from_file</span>(<span class="hljs-params">filepath</span>):
+    <span class="hljs-string">"""
+    从单个日志文件中提取所有条目信息。
+    每个条目包含：执行时间、SQL、参数、执行计划。
+    返回列表，每个元素为字典：
+        {
+            'exec_time': str,   # 原始执行时间字符串（如 "0.889 ms"）
+            'sql': str,
+            'params': str,      # 参数字符串，如果没有则为空字符串
+            'plan': str         # 计划文本，如果没有则为空字符串
+        }
+    """</span>
+    entries = []
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(filepath, <span class="hljs-string">'r'</span>, encoding=<span class="hljs-string">'utf-8'</span>, errors=<span class="hljs-string">'ignore'</span>) <span class="hljs-keyword">as</span> f:
+            lines = f.readlines()
+    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"读取文件 <span class="hljs-subst">{filepath}</span> 出错: <span class="hljs-subst">{e}</span>"</span>)
+        <span class="hljs-keyword">return</span> entries
+
+    i = <span class="hljs-number">0</span>
+    n = <span class="hljs-built_in">len</span>(lines)
+
+    <span class="hljs-keyword">while</span> i &lt; n:
+        line = lines[i]
+        <span class="hljs-keyword">if</span> <span class="hljs-string">'LOG:  duration:'</span> <span class="hljs-keyword">in</span> line:
+            <span class="hljs-comment"># 提取执行时间</span>
+            exec_time_match = re.search(<span class="hljs-string">r'duration:\s*([\d.]+)\s*ms'</span>, line)
+            exec_time = exec_time_match.group(<span class="hljs-number">1</span>) + <span class="hljs-string">' ms'</span> <span class="hljs-keyword">if</span> exec_time_match <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+
+            <span class="hljs-comment"># 开始收集条目内容（后续所有行直到下一个 LOG:）</span>
+            i += <span class="hljs-number">1</span>
+            block_lines = []
+            <span class="hljs-keyword">while</span> i &lt; n <span class="hljs-keyword">and</span> <span class="hljs-string">'LOG:'</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> lines[i]:
+                block_lines.append(lines[i].rstrip(<span class="hljs-string">'\n'</span>))
+                i += <span class="hljs-number">1</span>
+
+            <span class="hljs-comment"># 初始化条目各部分</span>
+            sql_lines = []
+            params = <span class="hljs-string">''</span>
+            plan_lines = []
+
+            <span class="hljs-comment"># 在 block_lines 中查找 SQL 起始行（Query Text: 或 statement: 或 SQL:）</span>
+            sql_start_idx = -<span class="hljs-number">1</span>
+            sql_prefix = <span class="hljs-literal">None</span>
+            <span class="hljs-keyword">for</span> idx, bline <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(block_lines):
+                stripped = bline.lstrip()
+                <span class="hljs-keyword">if</span> stripped.startswith(<span class="hljs-string">'Query Text:'</span>):
+                    sql_prefix = <span class="hljs-string">'Query Text:'</span>
+                    sql_start_idx = idx
+                    <span class="hljs-keyword">break</span>
+                <span class="hljs-keyword">elif</span> stripped.startswith(<span class="hljs-string">'statement:'</span>):
+                    sql_prefix = <span class="hljs-string">'statement:'</span>
+                    sql_start_idx = idx
+                    <span class="hljs-keyword">break</span>
+                <span class="hljs-keyword">elif</span> stripped.startswith(<span class="hljs-string">'SQL:'</span>):
+                    sql_prefix = <span class="hljs-string">'SQL:'</span>
+                    sql_start_idx = idx
+                    <span class="hljs-keyword">break</span>
+
+            <span class="hljs-keyword">if</span> sql_start_idx == -<span class="hljs-number">1</span>:
+                <span class="hljs-keyword">continue</span>  <span class="hljs-comment"># 未找到 SQL 起始行，跳过</span>
+
+            <span class="hljs-comment"># 获取 SQL 的第一行（去除前缀）</span>
+            first_sql_line = re.sub(<span class="hljs-string">r'^(Query Text:|statement:|SQL:)\s*'</span>, <span class="hljs-string">''</span>, block_lines[sql_start_idx])
+            sql_lines.append(first_sql_line)
+
+            <span class="hljs-comment"># 从 SQL 起始行的下一行开始扫描，收集 SQL 直到遇到参数行或计划开始行</span>
+            <span class="hljs-comment">## ***== Copyright © databasenotes  ==***</span>
+            param_idx = -<span class="hljs-number">1</span>
+            plan_start_idx = -<span class="hljs-number">1</span>
+            <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(sql_start_idx + <span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(block_lines)):
+                current_line = block_lines[k]
+                stripped_line = current_line.lstrip()
+
+                <span class="hljs-comment"># 检查是否为参数行</span>
+                <span class="hljs-keyword">if</span> (stripped_line.startswith(<span class="hljs-string">'Query Parameters:'</span>) <span class="hljs-keyword">or</span>
+                    stripped_line.startswith(<span class="hljs-string">'parameters:'</span>) <span class="hljs-keyword">or</span>
+                    stripped_line.startswith(<span class="hljs-string">'参数:'</span>)):
+                    param_idx = k
+                    <span class="hljs-comment"># 提取参数值（去除前缀）</span>
+                    params_raw = re.sub(<span class="hljs-string">r'^(Query Parameters:|parameters:|参数:)\s*'</span>, <span class="hljs-string">''</span>, current_line)
+                    <span class="hljs-keyword">if</span> params_raw.startswith(<span class="hljs-string">':'</span>):
+                        params_raw = params_raw[<span class="hljs-number">1</span>:].lstrip()
+                    params = params_raw
+                    <span class="hljs-keyword">break</span>  <span class="hljs-comment"># 遇到参数行，SQL 结束</span>
+
+                <span class="hljs-comment"># 检查是否为计划开始行（包含 cost= 的行）</span>
+                <span class="hljs-keyword">if</span> <span class="hljs-string">'cost='</span> <span class="hljs-keyword">in</span> current_line:
+                    <span class="hljs-comment"># 可能是一行计划，停止 SQL 收集，并记录计划开始位置</span>
+                    plan_start_idx = k
+                    <span class="hljs-keyword">break</span>
+
+                <span class="hljs-comment"># 如果不是参数行也不是计划开始行，则加入 SQL</span>
+                sql_lines.append(current_line)
+
+            <span class="hljs-comment"># 如果遇到了参数行，计划应从参数行的下一行开始</span>
+            <span class="hljs-keyword">if</span> param_idx != -<span class="hljs-number">1</span>:
+                <span class="hljs-comment"># 从参数行之后寻找计划开始行</span>
+                <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(param_idx + <span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(block_lines)):
+                    <span class="hljs-keyword">if</span> <span class="hljs-string">'cost='</span> <span class="hljs-keyword">in</span> block_lines[k] <span class="hljs-keyword">or</span> block_lines[k].lstrip().split(<span class="hljs-literal">None</span>,<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>] <span class="hljs-keyword">in</span> PLAN_KEYWORDS:
+                        plan_start_idx = k
+                        <span class="hljs-keyword">break</span>
+                <span class="hljs-comment"># 如果没找到，可能是没有计划？但通常会有计划</span>
+            <span class="hljs-comment"># 如果已经找到 plan_start_idx（来自 SQL 收集过程中），直接使用</span>
+
+            <span class="hljs-comment"># 收集计划行</span>
+            <span class="hljs-keyword">if</span> plan_start_idx != -<span class="hljs-number">1</span>:
+                <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(plan_start_idx, <span class="hljs-built_in">len</span>(block_lines)):
+                    plan_lines.append(block_lines[k])
+
+            <span class="hljs-comment"># 构建条目</span>
+            sql = <span class="hljs-string">'\n'</span>.join(sql_lines).strip()
+            plan = <span class="hljs-string">'\n'</span>.join(plan_lines).strip()
+            <span class="hljs-keyword">if</span> sql:
+                entries.append({
+                    <span class="hljs-string">'exec_time'</span>: exec_time,
+                    <span class="hljs-string">'sql'</span>: sql,
+                    <span class="hljs-string">'params'</span>: params,
+                    <span class="hljs-string">'plan'</span>: plan
+                })
+        <span class="hljs-keyword">else</span>:
+            i += <span class="hljs-number">1</span>
+
+    <span class="hljs-keyword">return</span> entries
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">process_logs</span>(<span class="hljs-params">log_pattern=<span class="hljs-string">'postgresql-*.log'</span>, output_file=<span class="hljs-string">'unique_sql_plan.txt'</span></span>):
+    <span class="hljs-string">"""批量处理日志文件，输出 (SQL, 计划) 去重后的结果（保留原始格式）"""</span>
+    <span class="hljs-comment">## ***== Copyright © databasenotes  ==***</span>
+    all_entries = []
+    file_list = <span class="hljs-built_in">sorted</span>(glob.glob(log_pattern))
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> file_list:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"未找到匹配的日志文件，请检查模式。"</span>)
+        <span class="hljs-keyword">return</span>
+
+    <span class="hljs-keyword">for</span> filepath <span class="hljs-keyword">in</span> file_list:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"处理文件: <span class="hljs-subst">{filepath}</span>"</span>)
+        entries = extract_entry_from_file(filepath)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f"  提取到 <span class="hljs-subst">{<span class="hljs-built_in">len</span>(entries)}</span> 条条目"</span>)
+        all_entries.extend(entries)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"\n共提取到 <span class="hljs-subst">{<span class="hljs-built_in">len</span>(all_entries)}</span> 条原始条目"</span>)
+
+    <span class="hljs-comment"># 去重：以规范化后的 (SQL, 计划) 为唯一键</span>
+    unique_dict = OrderedDict()
+    <span class="hljs-keyword">for</span> entry <span class="hljs-keyword">in</span> all_entries:
+        key = (normalize_sql(entry[<span class="hljs-string">'sql'</span>]), normalize_plan(entry[<span class="hljs-string">'plan'</span>]))
+        <span class="hljs-keyword">if</span> key <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> unique_dict:
+            unique_dict[key] = entry
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"去重后剩余 <span class="hljs-subst">{<span class="hljs-built_in">len</span>(unique_dict)}</span> 条唯一 (SQL, 计划) 组合"</span>)
+
+    <span class="hljs-comment"># 写入输出文件（保留原始格式）</span>
+    <span class="hljs-comment">## ***== Copyright © databasenotes  ==***</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(output_file, <span class="hljs-string">'w'</span>, encoding=<span class="hljs-string">'utf-8'</span>) <span class="hljs-keyword">as</span> out:
+        <span class="hljs-keyword">for</span> idx, entry <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(unique_dict.values(), <span class="hljs-number">1</span>):
+            out.write(<span class="hljs-string">f"--- 条目 <span class="hljs-subst">{idx}</span> ---\n"</span>)
+            <span class="hljs-keyword">if</span> entry[<span class="hljs-string">'exec_time'</span>]:
+                out.write(<span class="hljs-string">f"执行时间: <span class="hljs-subst">{entry[<span class="hljs-string">'exec_time'</span>]}</span>\n"</span>)
+            out.write(<span class="hljs-string">f"SQL: <span class="hljs-subst">{entry[<span class="hljs-string">'sql'</span>]}</span>\n"</span>)
+            <span class="hljs-keyword">if</span> entry[<span class="hljs-string">'params'</span>]:
+                out.write(<span class="hljs-string">f"参数: <span class="hljs-subst">{entry[<span class="hljs-string">'params'</span>]}</span>\n"</span>)
+            out.write(<span class="hljs-string">"\n执行计划:\n"</span>)
+            <span class="hljs-keyword">if</span> entry[<span class="hljs-string">'plan'</span>]:
+                out.write(entry[<span class="hljs-string">'plan'</span>] + <span class="hljs-string">"\n"</span>)
+            <span class="hljs-keyword">else</span>:
+                out.write(<span class="hljs-string">"(无计划记录)\n"</span>)
+            out.write(<span class="hljs-string">"\n"</span> + <span class="hljs-string">"="</span>*<span class="hljs-number">80</span> + <span class="hljs-string">"\n\n"</span>)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"结果已保存到 <span class="hljs-subst">{os.path.abspath(output_file)}</span>"</span>)
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+    process_logs()
+</code></pre>
+<hr></hr>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="pg_log_auto-capture_sqltext.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 从pg日志中提取慢sqltext">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"从pg日志中提取慢sqlplan","level":"1.2.4.4","depth":3,"next":{"title":"国产数据库","level":"1.3","depth":1,"ref":"","articles":[{"title":"DAMENG(DM8)","level":"1.3.1","depth":2,"ref":"","articles":[{"title":"[dm8一键部署脚本]","level":"1.3.1.1","depth":3,"ref":"","articles":[]},{"title":"[dm8版本查询]","level":"1.3.1.2","depth":3,"ref":"","articles":[]}]},{"title":"KINGBASE(KESv9)","level":"1.3.2","depth":2,"ref":"","articles":[{"title":"[KES一键部署脚本]","level":"1.3.2.1","depth":3,"ref":"","articles":[]}]},{"title":"OCEANBASE(OB)","level":"1.3.3","depth":2,"ref":"","articles":[{"title":"[OBproxy学习]","level":"1.3.3.1","depth":3,"ref":"","articles":[]}]},{"title":"TIDB","level":"1.3.4","depth":2,"ref":"","articles":[{"title":"[tidb的安装]","level":"1.3.4.1","depth":3,"ref":"","articles":[]}]},{"title":"YashanDB","level":"1.3.5","depth":2,"ref":"","articles":[{"title":"[ysdb一键部署脚本]","level":"1.3.5.1","depth":3,"ref":"","articles":[]}]},{"title":"OpenGauss(OG)","level":"1.3.6","depth":2,"ref":"","articles":[{"title":"[omm登录限制]","level":"1.3.6.1","depth":3,"ref":"","articles":[]}]},{"title":"Others","level":"1.3.7","depth":2,"ref":"","articles":[]}]},"previous":{"title":"从pg日志中提取慢sqltext","level":"1.2.4.3","depth":3,"path":"dbnotes/db/pg/pg_log_auto-capture_sqltext.md","ref":"dbnotes/db/pg/pg_log_auto-capture_sqltext.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-comscore","-search","-lunr","search-pro","back-to-top-button","copy-code-button","expandable-chapters","anchor-navigation-ex","-donate","password-pro","code","lightbox","auto-scroll-table","livereload"],"root":".","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"styles":{"website":"styles/website.css"},"livereload":{},"search-pro":{"cutWordLib":"nodejieba"},"auto-scroll-table":{"speed":50,"autoStart":true,"showControls":false},"code":{"copyButtons":true},"donate":{"wechat":"../images/wechat-qr-code.png","alipay":"../images/alipay-qr-code.png","title":"如果本文对您有帮助,欢迎打赏","button":"赞赏","wechatText":"微信打赏","alipayText":"支付宝打赏"},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"showLevel":false,"associatedWithSummary":true,"mode":"float","showGoTop":true,"printLog":false,"multipleH1":true,"float":{"floatIcon":"fa fa-navicon","showLevelIcon":false,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"},"pageTop":{"showLevelIcon":false,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"}},"lightbox":{"jquery":true,"includeJquery":false,"sameUuid":false},"theme-comscore":{},"back-to-top-button":{},"copy-code-button":{},"password-pro":{"tip":"请输入该页面的访问密码:","errorTip":"密码错误, 请重新输入:","reject":"当前页面拒绝访问: 身份验证失败.","//":"简化写法,只为该页面指定密码","download.md":{"password":"DBNotes.cn","tip":"下载资源需要验证密码:"},"/dbnotes/ftp/auto_install.md":"DBNotes.cn"},"sharing":{"facebook":false,"twitter":false,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false,"scripts":{"website":"styles/baidu-stat.js"}},"expandable-chapters":{"articlesExpanded":false}},"theme":"default","author":"dbnotes-cn","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"titleTemplate":"%s · dbnotes.cn","structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"dbnotes.cn","language":"zh-hans","links":{"sidebar":{"Home":"https://www.dbnotes.cn"},"home":"https://www.dbnotes.cn/","about":"https://www.dbnotes.cn/about","issues":"https://www.dbnotes.cn/issues","contribute":"https://www.dbnotes.cn"},"gitbook":"*","description":"数据库和运维相关笔记"},"file":{"path":"dbnotes/db/pg/pg_log_auto-capture_sqlplan.md","mtime":"2026-03-12T06:43:10.869Z","type":"markdown"},"gitbook":{"version":"6.1.6","time":"2026-03-12T08:55:22.688Z"},"basePath":"../../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../../../gitbook/gitbook.js"></script>
+    <script src="../../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-pro/search.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-copy-code-button/toggle.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-expandable-chapters/expandable-chapters.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-password-pro/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-password-pro/md5.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-code/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-lightbox/js/lightbox.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-auto-scroll-table/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-theme-comscore/test.js"></script>
+        
+    
+
+    </body>
+</html>
+

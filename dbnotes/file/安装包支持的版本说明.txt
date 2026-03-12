@@ -1,0 +1,25 @@
+--20250725
+1. 针对V9R1C02及以前的旧版本 
+Autoinstall_KESv9.tar.gz
+ 本脚本支持 在执行 ./setup.sh 窗口化界面/命令行过程中，包含初始化数据库的所有版本！！！
+
+--20250916
+2. 鉴于 V9R1C10及后续的新版本 
+setup.sh 静默参数变化过大，并且需要手动调用kconsole.sh 数据库初始化动作（即不支持初始化db）
+本脚本暂未支持此类版本的安装，请知悉，谢谢！！！
+V9R1C10版本发布晚于本脚本的发布！！！
+
+--20251101
+3. 针对 V9R1C10及后续的新版本
+专门针对 V9R1C10及后续的新版本的一键安装包（需要手动调用kconsole.sh进行数据库初始化的所有版本）
+  Autoinstall_KESv9_new.tar.gz
+  
+
+--20251212 完善旧版本的安装逻辑,重新打包
+ 针对V9R1C02及以前的旧版本 Autoinstall_KESv9.tar.gz  -->  变更为  Autoinstall_KESv9_old.tar.gz
+ 针对 V9R1C10及后续的新版本 Autoinstall_KESv9_new.tar.gz 不作名称变更,仅完善逻辑.
+
+
+4. 一键安装包tar解压后，第一时间看README,谢谢！！！
+安装过程，如有问题，欢迎留言
+

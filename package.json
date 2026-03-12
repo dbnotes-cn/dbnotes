@@ -26,6 +26,7 @@
     "gitbook-plugin-image-viewer": "^0.1.0",
     "gitbook-plugin-lightbox": "^1.2.0",
     "gitbook-plugin-page-footer": "^5.5.0",
+    "gitbook-plugin-password-pro": "^0.0.3",
     "gitbook-plugin-prism": "^2.4.0",
     "gitbook-plugin-search-pro": "^2.0.2",
     "gitbook-plugin-theme-code": "^0.0.24",
