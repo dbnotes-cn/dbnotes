@@ -24,7 +24,7 @@
 
 /* 自定义版权信息 */
 .book .page-inner::after {
-    content: "Copyright © 2025-2026 dbnotes.cn.  All rights reserved. ";
+    content: "Copyright © 2025-2026 www.dbnotes.cn.  All rights reserved. ";
     display: block;
     text-align: center;
     padding: 20px;
