@@ -35,5 +35,8 @@
     "gitbook-plugin-theme-comscore": "^0.0.3",
     "honkit": "^6.1.6",
     "install": "^0.13.0"
+  },
+  "dependencies": {
+    "gitbook-plugin-secure-download": "file:gitbook-plugin-secure-download"
   }
 }
